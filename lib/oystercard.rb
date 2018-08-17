@@ -2,20 +2,21 @@ class Oystercard
 
   MAXIMUM_BALANCE = 90
   MINIMUM_FARE = 1
-  attr_reader :balance, :entry_station
+  attr_reader :balance, :entry_station, :journeys
 
   def initialize
     @balance = 0
-    # @in_journey = false
+    @journeys = []
   end
 
   def top_up(amount)
     raise "Maximum balance of #{Oystercard::MAXIMUM_BALANCE} exceeded!" if maximum_exceeded?(amount)
-    self.balance += amount 
+    @balance += amount 
   end
   
   def in_journey?
     @entry_station ? true : false
+    # could also write !!entry_station
   end
 
   def touch_in(station)
@@ -23,15 +24,13 @@ class Oystercard
     @entry_station = station
   end
 
-  def touch_out
+  def touch_out(station)
     deduct(MINIMUM_FARE)
+    @journeys << {entry_station: @entry_station, exit_station: station}
     @entry_station = nil
   end
 
   private
-  
-  attr_writer :balance
-  attr_accessor :in_journey
 
   def maximum_exceeded?(amount)
     @balance + amount > MAXIMUM_BALANCE ? true : false
@@ -42,7 +41,7 @@ class Oystercard
   end
 
   def deduct(amount)
-    self.balance -= amount
+    @balance -= amount
   end
 
 end
