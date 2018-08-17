@@ -16,18 +16,19 @@ class Oystercard
   
   def in_journey?
     @entry_station ? true : false
-    # could also write !!entry_station
   end
 
   def touch_in(station)
     raise ("You don't have enough balance for the minimum fare of #{Oystercard::MINIMUM_FARE}!") if insufficient_balance?
-    @entry_station = station
+    @new_journey = Journey.new(station)
+    # @entry_station = station
   end
 
   def touch_out(station)
-    deduct(MINIMUM_FARE)
-    @journeys << {entry_station: @entry_station, exit_station: station}
-    @entry_station = nil
+    @new_journey.exit_station = station
+    # deduct(MINIMUM_FARE)
+    @journeys << {@new_journey}
+    # @entry_station = nil
   end
 
   private

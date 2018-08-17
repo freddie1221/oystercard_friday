@@ -30,8 +30,27 @@ describe Journey do
       expect(subject.fare).to eq Oystercard::MINIMUM_FARE
     end
 
-
   end
 
+  describe "#journey_complete?" do
+
+    it "returns true if the journey is complete" do
+      subject.entry_station = entry_station
+      subject.exit_station = exit_station
+      expect(subject.journey_complete?).to eq true
+    end
+    it "returns false if the journey is complete" do
+      subject.entry_station = entry_station
+      subject.exit_station = nil
+      expect(subject.journey_complete?).to eq false
+    end
+    it "returns false if the journey is complete" do
+      subject.entry_station = nil
+      subject.exit_station = exit_station
+      expect(subject.journey_complete?).to eq false
+    end
+  end
+
+      
 
 end
