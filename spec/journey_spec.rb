@@ -19,11 +19,9 @@ describe Journey do
   end
 
   describe "#fare" do
-  
     it "returns the penalty fare" do
       expect(subject.fare).to eq Journey::PENALTY_FARE
     end
-
     it "returns the minimum fare" do
       subject.entry_station = entry_station
       subject.exit_station = exit_station
@@ -33,7 +31,6 @@ describe Journey do
   end
 
   describe "#journey_complete?" do
-
     it "returns true if the journey is complete" do
       subject.entry_station = entry_station
       subject.exit_station = exit_station

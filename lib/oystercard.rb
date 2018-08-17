@@ -1,3 +1,5 @@
+require_relative 'journey'
+
 class Oystercard
 
   MAXIMUM_BALANCE = 90
@@ -14,21 +16,15 @@ class Oystercard
     @balance += amount 
   end
   
-  def in_journey?
-    @entry_station ? true : false
-  end
-
-  def touch_in(station)
+  def touch_in(station, journey_class = Journey)
     raise ("You don't have enough balance for the minimum fare of #{Oystercard::MINIMUM_FARE}!") if insufficient_balance?
-    @new_journey = Journey.new(station)
-    # @entry_station = station
+    @new_journey = journey_class.new(station)
   end
 
   def touch_out(station)
     @new_journey.exit_station = station
-    # deduct(MINIMUM_FARE)
-    @journeys << {@new_journey}
-    # @entry_station = nil
+    deduct(@new_journey.fare)
+    @journeys << @new_journey
   end
 
   private

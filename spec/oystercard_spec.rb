@@ -4,6 +4,9 @@ describe Oystercard do
 
   let(:entry_station) { double :station }
   let(:exit_station) { double :station }
+  let(:journey_instance)  { double :journey, :journey_complete? => false } 
+  let(:journey_class) { double :journey_class, :new => journey_instance}
+  
 
   describe "#balance" do
     it "returns a balance" do
@@ -21,21 +24,7 @@ describe Oystercard do
     end
   end
 
-  describe "#in_journey?" do
-    it "should return false if the card has not yet started a journey" do
-      expect(subject.in_journey?).to eq false
-    end
-  end
-
   describe "#touch_in" do
-    it "should set in_journey to true" do
-      subject.top_up(Oystercard::MINIMUM_FARE)
-      expect{ subject.touch_in(entry_station) }.to change { subject.in_journey? }.from(false).to(true)
-    end
-    it "should set the entry station" do
-      subject.top_up(Oystercard::MINIMUM_FARE)
-      expect{ subject.touch_in(entry_station) }.to change { subject.entry_station }.from(nil).to(entry_station)
-    end
     it "should raise error if insufficient balance for minimum fare" do
       expect{ subject.touch_in(entry_station) }.to raise_error("You don't have enough balance for the minimum fare of #{Oystercard::MINIMUM_FARE}!")
     end
@@ -45,9 +34,6 @@ describe Oystercard do
     before(:example) do
       subject.top_up(Oystercard::MINIMUM_FARE)
       subject.touch_in(entry_station)
-    end
-    it "should set in_journey to false" do
-      expect{ subject.touch_out(exit_station) }.to change { subject.in_journey? }.from(true).to(false)
     end
     it "should remove balance from the card" do
       expect { subject.touch_out(exit_station) }.to change{ subject.balance }.by( -Oystercard::MINIMUM_FARE)
@@ -65,8 +51,7 @@ describe Oystercard do
     it "contains a journey object" do
       subject.top_up(Oystercard::MINIMUM_FARE)
       subject.touch_in(entry_station)
-      subject.touch_out(exit_station)
-      expect(subject.journeys).to include journey
+      expect { subject.touch_out(exit_station) }.to change{ subject.journeys.length }.by 1
     end
   end
 

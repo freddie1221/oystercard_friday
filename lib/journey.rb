@@ -12,7 +12,7 @@ class Journey
   end
 
   def fare
-    @entry_station && @exit_station ? Oystercard::MINIMUM_FARE : PENALTY_FARE
+    @entry_station && @exit_station ? Oystercard::MINIMUM_FARE : Journey::PENALTY_FARE
   end
 
   def journey_complete?
